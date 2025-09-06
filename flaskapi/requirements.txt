@@ -1,2 +1,6 @@
 flask
 flask_cors
+numpy
+requests
+joblib
+scikit-learn
