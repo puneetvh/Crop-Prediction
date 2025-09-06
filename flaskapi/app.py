@@ -13,8 +13,8 @@ CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 API_KEY = 'f898f0ddd0357d85d49c79f1b4b16763'  # OpenWeather API
 BASE_URL = 'https://api.openweathermap.org/data/2.5/'  # Base URL for API request
 
-hum_model = joblib.load(r'C:\Users\vhpun\Downloads\sampleapp\flaskapi\hum_model.pkl')
-temp_model = joblib.load(r'C:\Users\vhpun\Downloads\sampleapp\flaskapi\temp_model.pkl')
+hum_model = joblib.load('./hum_model.pkl')
+temp_model = joblib.load('./temp_model.pkl')
 
 def predict_future(model, current_value):
     predictions = [current_value]
