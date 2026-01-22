@@ -525,3 +525,44 @@ button:hover {
 .icon-button:hover {
   background-color: #666;
 }
+
+/* Prediction List Styles */
+.prediction-lists {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  gap: 10px;
+}
+
+.prediction-column {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.prediction-column h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.prediction-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.prediction-column li {
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+}
+
+.prediction-column li:last-child {
+  border-bottom: none;
+}
+

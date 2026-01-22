@@ -128,10 +128,29 @@ const WeatherCard = ({ city, useCurrentLocation, coordinates }) => {
         <div className="prediction-card">
           <h3>🌦️ ML-Based Weather Predictions</h3>
           <p><strong>City:</strong> {prediction.city}</p>
+
           <p><strong>Will it rain?</strong> {prediction.predicted_rain ? "Yes 🌧️" : "No ☀️"}</p>
-          <p><strong>Predicted Temp:</strong> {prediction.predicted_temperature} °C</p>
-          <p><strong>Predicted Humidity:</strong> {prediction.predicted_humidity} %</p>
+
+          <div className="prediction-lists">
+            <div className="prediction-column">
+              <h4>🌡️ Temp (Next 7 Days)</h4>
+              <ul>
+                {prediction.predicted_temperatures && prediction.predicted_temperatures.map((temp, i) => (
+                  <li key={i}>Day {i + 1}: {temp}°C</li>
+                ))}
+              </ul>
+            </div>
+            <div className="prediction-column">
+              <h4>💧 Humidity (Next 7 Days)</h4>
+              <ul>
+                {prediction.predicted_humidity && prediction.predicted_humidity.map((hum, i) => (
+                  <li key={i}>Day {i + 1}: {hum}%</li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
+
       )}
 
       {prediction?.error && (

@@ -18,9 +18,18 @@ import os
 # Get the directory where the current file is located
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-# Load models using absolute paths
-hum_model = joblib.load(os.path.join(current_dir, 'hum_model.pkl'))
-temp_model = joblib.load(os.path.join(current_dir, 'temp_model.pkl'))
+
+# Load models using absolute paths with error handling
+try:
+    hum_model = joblib.load(os.path.join(current_dir, 'hum_model.pkl'))
+    temp_model = joblib.load(os.path.join(current_dir, 'temp_model.pkl'))
+    model_load_error = None
+except Exception as e:
+    print(f"Error loading models: {e}")
+    hum_model = None
+    temp_model = None
+    model_load_error = str(e)
+
 
 def predict_future(model, current_value):
     predictions = [current_value]
@@ -29,9 +38,12 @@ def predict_future(model, current_value):
         predictions.append(next_value[0])
     return predictions[1:]
 
-@app.route('/')
+@app.route('/api/')
 def home():
-    return "🌦️ Flask Weather ML API is Running!"
+    if model_load_error:
+        return f"🌦️ Flask Weather ML API is Running! WARNING: Models failed to load: {model_load_error}"
+    return "🌦️ Flask Weather ML API is Running! Models loaded successfully."
+
 
 def get_current_weather(city):
     url = f"{BASE_URL}weather?q={city}&appid={API_KEY}&units=metric"
@@ -51,8 +63,11 @@ def get_current_weather(city):
         'pressure': data['main']['pressure']
     }
 
-@app.route('/predict', methods=['POST'])
+@app.route('/api/predict', methods=['POST'])
 def predict():
+    if not hum_model or not temp_model:
+        return jsonify({'error': f'Models not loaded. Server Error: {model_load_error}'}), 500
+
     data = request.get_json()
     city = data.get('city', '').strip()
 
