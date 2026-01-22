@@ -2,8 +2,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:5000', // Flask API URL
-  withCredentials: true, // For session handling if needed
+  baseURL: '/api', // Relative path for Vercel
+  withCredentials: true,
 });
 
 // Function to call /predict endpoint

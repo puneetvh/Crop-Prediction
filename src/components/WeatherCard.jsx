@@ -36,8 +36,9 @@ const WeatherCard = ({ city, useCurrentLocation, coordinates }) => {
 
       try {
         // ML prediction via Flask API
-        const predRes = await axios.post(""https://b468-34-126-65-19.ngrok-free.app/predict"", { 
-          city: weatherRes.data.name 
+        // ML prediction via Flask API
+        const predRes = await axios.post("/api/predict", {
+          city: weatherRes.data.name
         });
         setPrediction(predRes.data);
       } catch (predErr) {
@@ -72,8 +73,9 @@ const WeatherCard = ({ city, useCurrentLocation, coordinates }) => {
 
       try {
         // ML prediction via Flask API
-        const predRes = await axios.post("http://localhost:5000/predict", { 
-          city: weatherRes.data.name 
+        // ML prediction via Flask API
+        const predRes = await axios.post("/api/predict", {
+          city: weatherRes.data.name
         });
         setPrediction(predRes.data);
       } catch (predErr) {
@@ -131,7 +133,7 @@ const WeatherCard = ({ city, useCurrentLocation, coordinates }) => {
           <p><strong>Predicted Humidity:</strong> {prediction.predicted_humidity} %</p>
         </div>
       )}
-      
+
       {prediction?.error && (
         <div className="prediction-error">
           ⚠️ Prediction Error: {prediction.error}

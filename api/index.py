@@ -13,8 +13,14 @@ CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 API_KEY = 'f898f0ddd0357d85d49c79f1b4b16763'  # OpenWeather API
 BASE_URL = 'https://api.openweathermap.org/data/2.5/'  # Base URL for API request
 
-hum_model = joblib.load('./hum_model.pkl')
-temp_model = joblib.load('./temp_model.pkl')
+import os
+
+# Get the directory where the current file is located
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Load models using absolute paths
+hum_model = joblib.load(os.path.join(current_dir, 'hum_model.pkl'))
+temp_model = joblib.load(os.path.join(current_dir, 'temp_model.pkl'))
 
 def predict_future(model, current_value):
     predictions = [current_value]
@@ -68,5 +74,7 @@ def predict():
 
     return jsonify(curr_weather)
 
-if __name__ == '__main__':
-    app.run(port=8084)
+# Vercel requires the app object to be available as a variable named 'app'
+# No app.run() needed for Vercel
+
+895
