@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 app = Flask(__name__)
 
 # Enable CORS for your frontend
-CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 API_KEY = 'f898f0ddd0357d85d49c79f1b4b16763'  # OpenWeather API
 BASE_URL = 'https://api.openweathermap.org/data/2.5/'  # Base URL for API request
@@ -31,65 +31,38 @@ except Exception as e:
     model_load_error = str(e)
 
 
-def predict_future(model, current_value):
-    predictions = [current_value]
-    for i in range(7):
-        next_value = model.predict(np.array([[predictions[-1]]]))
-        predictions.append(next_value[0])
-    return predictions[1:]
+from agents.orchestrator import AgentOrchestrator
 
-@app.route('/api/')
+orchestrator = AgentOrchestrator()
+
+@app.route('/')
 def home():
-    if model_load_error:
-        return f"🌦️ Flask Weather ML API is Running! WARNING: Models failed to load: {model_load_error}"
-    return "🌦️ Flask Weather ML API is Running! Models loaded successfully."
+    return "<h1>AgriGenius Backend is Running!</h1><p>Use the frontend at localhost:5173 to interact.</p>"
 
-
-def get_current_weather(city):
-    url = f"{BASE_URL}weather?q={city}&appid={API_KEY}&units=metric"
-    response = requests.get(url)
-    data = response.json()
-    return {
-        'city': data['name'],
-        'current_temp': round(data['main']['temp']),
-        'feels_like': round(data['main']['feels_like']),
-        'temp_min': round(data['main']['temp_min']),
-        'temp_max': round(data['main']['temp_max']),
-        'humidity': round(data['main']['humidity']),
-        'description': data['weather'][0]['description'],
-        'country': data['sys']['country'],
-        'Wind_Gust_Dir': data['wind']['deg'],
-        'Wind_Gust_Speed': data['wind']['speed'],
-        'pressure': data['main']['pressure']
-    }
-
-@app.route('/api/predict', methods=['POST'])
-def predict():
-    if not hum_model or not temp_model:
-        return jsonify({'error': f'Models not loaded. Server Error: {model_load_error}'}), 500
-
+@app.route('/api/workflow', methods=['POST'])
+def workflow():
     data = request.get_json()
     city = data.get('city', '').strip()
 
     if not city:
         return jsonify({'error': 'City not provided'}), 400
 
-    print(f"🌍 Received city: {city}")
+    print(f"🌍 Received request for city: {city}")
     
-    curr_weather = get_current_weather(city)
-    predicted_temps = predict_future(temp_model, curr_weather['temp_min'])
-    predicted_humidity = predict_future(hum_model, curr_weather['humidity'])
+    try:
+        result = orchestrator.run_workflow(city)
+        if "error" in result:
+             return jsonify(result), 500
+        return jsonify(result)
+    except Exception as e:
+        print(f"Workflow Error: {e}")
+        return jsonify({'error': str(e)}), 500
 
-    print(curr_weather['humidity'], curr_weather['temp_min'])
-    print(f"the predicted temperatures is {predicted_temps}, the predicted humidity is {predicted_humidity}")
-
-    # Attach predictions to response
-    curr_weather['predicted_temperatures'] = [round(float(val), 2) for val in predicted_temps]
-    curr_weather['predicted_humidity'] = [round(float(val), 2) for val in predicted_humidity]
-
-    return jsonify(curr_weather)
 
 # Vercel requires the app object to be available as a variable named 'app'
 # No app.run() needed for Vercel
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5000)
 
 895

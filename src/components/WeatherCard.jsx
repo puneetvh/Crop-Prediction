@@ -126,31 +126,39 @@ const WeatherCard = ({ city, useCurrentLocation, coordinates }) => {
 
       {prediction && !prediction.error && (
         <div className="prediction-card">
-          <h3>🌦️ ML-Based Weather Predictions</h3>
+          <h3>🌦️ AI Prediction (Next 30 Days)</h3>
           <p><strong>City:</strong> {prediction.city}</p>
+          <p><strong>Rainfall Expected?</strong> {prediction.will_rain_next_30_days ? "Yes 🌧️" : "No ☀️"}</p>
 
-          <p><strong>Will it rain?</strong> {prediction.predicted_rain ? "Yes 🌧️" : "No ☀️"}</p>
-
-          <div className="prediction-lists">
+          <div className="prediction-lists" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', maxHeight: '300px', overflowY: 'auto' }}>
             <div className="prediction-column">
-              <h4>🌡️ Temp (Next 7 Days)</h4>
+              <h4>🌡️ Temp</h4>
               <ul>
-                {prediction.predicted_temperatures && prediction.predicted_temperatures.map((temp, i) => (
+                {prediction.forecast?.temperature_30_days?.map((temp, i) => (
                   <li key={i}>Day {i + 1}: {temp}°C</li>
                 ))}
               </ul>
             </div>
             <div className="prediction-column">
-              <h4>💧 Humidity (Next 7 Days)</h4>
+              <h4>💧 Humidity</h4>
               <ul>
-                {prediction.predicted_humidity && prediction.predicted_humidity.map((hum, i) => (
+                {prediction.forecast?.humidity_30_days?.map((hum, i) => (
                   <li key={i}>Day {i + 1}: {hum}%</li>
+                ))}
+              </ul>
+            </div>
+            <div className="prediction-column">
+              <h4>🌧️ Rainfall</h4>
+              <ul>
+                {prediction.forecast?.rainfall_30_days?.map((rain, i) => (
+                  <li key={i} style={{ color: rain > 5 ? 'blue' : 'inherit' }}>
+                    Day {i + 1}: {rain} mm
+                  </li>
                 ))}
               </ul>
             </div>
           </div>
         </div>
-
       )}
 
       {prediction?.error && (

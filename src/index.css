@@ -1,5 +1,28 @@
+:root {
+  --primary-color: #6C63FF;
+  --secondary-color: #03bfcb;
+  --bg-dark: #121212;
+  --bg-card: #1E1E2E;
+  --text-light: #ECEFF4;
+  --text-muted: #A0A0A0;
+  --glass-bg: rgba(30, 30, 46, 0.7);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+  --shadow-lg: 0 10px 30px -10px rgba(2, 12, 27, 0.7);
+}
+
 body {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f6f8fa;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  -webkit-font-smoothing: antialiased;
 }
+
+.modern-dashboard {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  background: radial-gradient(circle at top right, #2b2d42, #121212);
+}
+
